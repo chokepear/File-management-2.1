@@ -19,7 +19,43 @@
   </style>
 </head>
 <body>
+// Document Management (Upload)
+document.getElementById('uploadForm').onsubmit = async function(e) {
+  e.preventDefault();
+  const fileInput = document.getElementById("doc-file");
+  const formData = new FormData();
+  formData.append("file", fileInput.files[0]);
+  const res = await fetch('http://localhost:3000/api/documents', {
+    method: 'POST',
+    body: formData
+  });
+  if (res.ok) {
+    fileInput.value = '';
+    loadDocuments();
+  }
+};
 
+async function loadDocuments() {
+  const res = await fetch('http://localhost:3000/api/documents');
+  const docs = await res.json();
+  document.getElementById("doc-list").innerHTML = docs.map(
+    d => `<li>${d.name}</li>`
+  ).join("");
+}
+loadDocuments();
+
+// Analytics & Reporting
+async function generateReport() {
+  const res = await fetch('http://localhost:3000/api/analytics');
+  const data = await res.json();
+  document.getElementById("analytics-output").innerHTML =
+    `<p><strong>Simple Report:</strong></p>
+    <ul>
+      <li>Documents: ${data.documentCount}</li>
+      <li>Workflow Steps: ${data.workflowCount}</li>
+      <li>Stakeholders: ${data.stakeholderCount}</li>
+    </ul>`;
+}
   <h1>Organisation Management App</h1>
   <nav>
     <button id="tab-docs" class="active">Document Management</button>
