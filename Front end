@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Organisation Management App</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f6f7fb; }
+    nav { display: flex; gap: 10px; margin-bottom: 20px; }
+    nav button { padding: 10px 20px; border: none; background: #eee; border-radius: 5px; cursor: pointer; }
+    nav button.active { background: #1565c0; color: #fff; }
+    section { display: none; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+    section.active { display: block; }
+    .list { margin-top: 10px; }
+    .list li { margin-bottom: 5px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 15px; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background: #f0f7ff; }
+    .workflow-step { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Organisation Management App</h1>
+  <nav>
+    <button id="tab-docs" class="active">Document Management</button>
+    <button id="tab-analytics">Analytics & Reporting</button>
+    <button id="tab-workflow">Workflow Management</button>
+    <button id="tab-stakeholders">Stakeholder Management</button>
+  </nav>
+  <!-- Document Management -->
+  <section id="docs-section" class="active">
+    <h2>Document Management</h2>
+    <input type="text" id="doc-name" placeholder="Document Name">
+    <button onclick="addDoc()">Add Document</button>
+    <ul id="doc-list" class="list"></ul>
+  </section>
+  <!-- Analytics and Reporting -->
+  <section id="analytics-section">
+    <h2>Analytics & Reporting</h2>
+    <button onclick="generateReport()">Generate Report</button>
+    <div id="analytics-output"></div>
+  </section>
+  <!-- Workflow Management -->
+  <section id="workflow-section">
+    <h2>Workflow Management</h2>
+    <input type="text" id="workflow-step" placeholder="Workflow Step">
+    <button onclick="addStep()">Add Step</button>
+    <div id="workflow-list"></div>
+  </section>
+  <!-- Stakeholder Management -->
+  <section id="stakeholder-section">
+    <h2>Stakeholder Management</h2>
+    <input type="text" id="stakeholder-name" placeholder="Stakeholder Name">
+    <input type="text" id="stakeholder-role" placeholder="Role">
+    <button onclick="addStakeholder()">Add Stakeholder</button>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Role</th></tr>
+      </thead>
+      <tbody id="stakeholder-list"></tbody>
+    </table>
+  </section>
+  <script>
+    // Tab switching
+    const tabs = [
+      { btn: "tab-docs", sec: "docs-section" },
+      { btn: "tab-analytics", sec: "analytics-section" },
+      { btn: "tab-workflow", sec: "workflow-section" },
+      { btn: "tab-stakeholders", sec: "stakeholder-section" }
+    ];
+    tabs.forEach(({btn, sec}, idx) => {
+      document.getElementById(btn).onclick = () => {
+        tabs.forEach((t, i) => {
+          document.getElementById(t.btn).classList.toggle("active", i === idx);
+          document.getElementById(t.sec).classList.toggle("active", i === idx);
+        });
+      };
+    });
+
+    // Document Management
+    let docs = [];
+    function addDoc() {
+      const docName = document.getElementById("doc-name").value.trim();
+      if (docName) {
+        docs.push(docName);
+        document.getElementById("doc-name").value = "";
+        renderDocs();
+      }
+    }
+    function renderDocs() {
+      const ul = document.getElementById("doc-list");
+      ul.innerHTML = docs.map((d, i) =>
+        `<li>${d} <button onclick="removeDoc(${i})">Delete</button></li>`
+      ).join("");
+    }
+    function removeDoc(idx) {
+      docs.splice(idx, 1);
+      renderDocs();
+    }
+
+    // Analytics & Reporting
+    function generateReport() {
+      const totalDocs = docs.length;
+      const totalStakeholders = stakeholders.length;
+      const totalSteps = workflow.length;
+      document.getElementById("analytics-output").innerHTML =
+        `<p><strong>Simple Report:</strong></p>
+        <ul>
+          <li>Documents: ${totalDocs}</li>
+          <li>Workflow Steps: ${totalSteps}</li>
+          <li>Stakeholders: ${totalStakeholders}</li>
+        </ul>`;
+    }
+
+    // Workflow Management
+    let workflow = [];
+    function addStep() {
+      const step = document.getElementById("workflow-step").value.trim();
+      if (step) {
+        workflow.push(step);
+        document.getElementById("workflow-step").value = "";
+        renderWorkflow();
+      }
+    }
+    function renderWorkflow() {
+      document.getElementById("workflow-list").innerHTML = 
+        workflow.map((w, i) => 
+          `<div class="workflow-step">${i+1}. ${w} <button onclick="removeStep(${i})">Delete</button></div>`
+        ).join("");
+    }
+    function removeStep(idx) {
+      workflow.splice(idx, 1);
+      renderWorkflow();
+    }
+
+    // Stakeholder Management
+    let stakeholders = [];
+    function addStakeholder() {
+      const name = document.getElementById("stakeholder-name").value.trim();
+      const role = document.getElementById("stakeholder-role").value.trim();
+      if (name && role) {
+        stakeholders.push({name, role});
+        document.getElementById("stakeholder-name").value = "";
+        document.getElementById("stakeholder-role").value = "";
+        renderStakeholders();
+      }
+    }
+    function renderStakeholders() {
+      document.getElementById("stakeholder-list").innerHTML =
+        stakeholders.map(s => `<tr><td>${s.name}</td><td>${s.role}</td></tr>`).join("");
+    }
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Organisation Management App</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f6f7fb; }
+    nav { display: flex; gap: 10px; margin-bottom: 20px; }
+    nav button { padding: 10px 20px; border: none; background: #eee; border-radius: 5px; cursor: pointer; }
+    nav button.active { background: #1565c0; color: #fff; }
+    section { display: none; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+    section.active { display: block; }
+    .list { margin-top: 10px; }
+    .list li { margin-bottom: 5px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 15px; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background: #f0f7ff; }
+    .workflow-step { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Organisation Management App</h1>
+  <nav>
+    <button id="tab-docs" class="active">Document Management</button>
+    <button id="tab-analytics">Analytics & Reporting</button>
+    <button id="tab-workflow">Workflow Management</button>
+    <button id="tab-stakeholders">Stakeholder Management</button>
+  </nav>
+  <!-- Document Management -->
+  <section id="docs-section" class="active">
+    <h2>Document Management</h2>
+    <input type="text" id="doc-name" placeholder="Document Name">
+    <button onclick="addDoc()">Add Document</button>
+    <ul id="doc-list" class="list"></ul>
+  </section>
+  <!-- Analytics and Reporting -->
+  <section id="analytics-section">
+    <h2>Analytics & Reporting</h2>
+    <button onclick="generateReport()">Generate Report</button>
+    <div id="analytics-output"></div>
+  </section>
+  <!-- Workflow Management -->
+  <section id="workflow-section">
+    <h2>Workflow Management</h2>
+    <input type="text" id="workflow-step" placeholder="Workflow Step">
+    <button onclick="addStep()">Add Step</button>
+    <div id="workflow-list"></div>
+  </section>
+  <!-- Stakeholder Management -->
+  <section id="stakeholder-section">
+    <h2>Stakeholder Management</h2>
+    <input type="text" id="stakeholder-name" placeholder="Stakeholder Name">
+    <input type="text" id="stakeholder-role" placeholder="Role">
+    <button onclick="addStakeholder()">Add Stakeholder</button>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Role</th></tr>
+      </thead>
+      <tbody id="stakeholder-list"></tbody>
+    </table>
+  </section>
+  <script>
+    // Tab switching
+    const tabs = [
+      { btn: "tab-docs", sec: "docs-section" },
+      { btn: "tab-analytics", sec: "analytics-section" },
+      { btn: "tab-workflow", sec: "workflow-section" },
+      { btn: "tab-stakeholders", sec: "stakeholder-section" }
+    ];
+    tabs.forEach(({btn, sec}, idx) => {
+      document.getElementById(btn).onclick = () => {
+        tabs.forEach((t, i) => {
+          document.getElementById(t.btn).classList.toggle("active", i === idx);
+          document.getElementById(t.sec).classList.toggle("active", i === idx);
+        });
+      };
+    });
+
+    // Document Management
+    let docs = [];
+    function addDoc() {
+      const docName = document.getElementById("doc-name").value.trim();
+      if (docName) {
+        docs.push(docName);
+        document.getElementById("doc-name").value = "";
+        renderDocs();
+      }
+    }
+    function renderDocs() {
+      const ul = document.getElementById("doc-list");
+      ul.innerHTML = docs.map((d, i) =>
+        `<li>${d} <button onclick="removeDoc(${i})">Delete</button></li>`
+      ).join("");
+    }
+    function removeDoc(idx) {
+      docs.splice(idx, 1);
+      renderDocs();
+    }
+
+    // Analytics & Reporting
+    function generateReport() {
+      const totalDocs = docs.length;
+      const totalStakeholders = stakeholders.length;
+      const totalSteps = workflow.length;
+      document.getElementById("analytics-output").innerHTML =
+        `<p><strong>Simple Report:</strong></p>
+        <ul>
+          <li>Documents: ${totalDocs}</li>
+          <li>Workflow Steps: ${totalSteps}</li>
+          <li>Stakeholders: ${totalStakeholders}</li>
+        </ul>`;
+    }
+
+    // Workflow Management
+    let workflow = [];
+    function addStep() {
+      const step = document.getElementById("workflow-step").value.trim();
+      if (step) {
+        workflow.push(step);
+        document.getElementById("workflow-step").value = "";
+        renderWorkflow();
+      }
+    }
+    function renderWorkflow() {
+      document.getElementById("workflow-list").innerHTML = 
+        workflow.map((w, i) => 
+          `<div class="workflow-step">${i+1}. ${w} <button onclick="removeStep(${i})">Delete</button></div>`
+        ).join("");
+    }
+    function removeStep(idx) {
+      workflow.splice(idx, 1);
+      renderWorkflow();
+    }
+
+    // Stakeholder Management
+    let stakeholders = [];
+    function addStakeholder() {
+      const name = document.getElementById("stakeholder-name").value.trim();
+      const role = document.getElementById("stakeholder-role").value.trim();
+      if (name && role) {
+        stakeholders.push({name, role});
+        document.getElementById("stakeholder-name").value = "";
+        document.getElementById("stakeholder-role").value = "";
+        renderStakeholders();
+      }
+    }
+    function renderStakeholders() {
+      document.getElementById("stakeholder-list").innerHTML =
+        stakeholders.map(s => `<tr><td>${s.name}</td><td>${s.role}</td></tr>`).join("");
+    }
+  </script>
+</body>
+</html>
